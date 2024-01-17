@@ -112,6 +112,9 @@ module Devise
         # A call to #empty? forces the session to be loaded.
         session.empty?
 
+        puts "=------------- session.keys :: #{session.keys}"
+        puts "=------------- session.keys.grep(/^devise\./) :: #{session.keys.grep(/^devise\./)}"
+
         session.keys.grep(/^devise\./).each { |k| session.delete(k) }
       end
 
