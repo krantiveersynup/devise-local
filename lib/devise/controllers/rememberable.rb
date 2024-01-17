@@ -22,6 +22,11 @@ module Devise
       def remember_me(resource)
         return if request.env["devise.skip_storage"]
         scope = Devise::Mapping.find_scope!(resource)
+
+        puts "=------------- scope:: #{scope}"
+        puts "=------------- remember_key(resource, scope):: #{remember_key(resource, scope)}"
+        puts "=------------- cookies.signed:: #{cookies.signed}"
+        
         resource.remember_me!
         cookies.signed[remember_key(resource, scope)] = remember_cookie_values(resource)
       end
@@ -30,6 +35,10 @@ module Devise
       def forget_me(resource)
         scope = Devise::Mapping.find_scope!(resource)
         resource.forget_me!
+        puts "=------------- cookies:: #{cookies}"
+        puts "=------------- resource :: #{resource.inspect}"
+        puts "=------------- cookiesinspect :: #{cookies.try(:inspect)}"
+        puts "--------------- forget_cookie_values(resource) :: #{forget_cookie_values(resource)}"
         cookies.delete(remember_key(resource, scope), forget_cookie_values(resource))
       end
 
@@ -46,6 +55,9 @@ module Devise
           value: resource.class.serialize_into_cookie(resource),
           expires: resource.remember_expires_at
         )
+
+        puts "--------remember_cookie_values #{options} :: ended"
+        return options
       end
 
       def remember_key(resource, scope)
